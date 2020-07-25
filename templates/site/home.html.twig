@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+{% block title %}Home Page{% endblock %}
+{% block body %}
+
+
+{# <div>
+
+<button id="btn-add" name="btn-add" class="btn btn-primary btn-add">Add</button>
+
+<button id="btn-remove" name="btn-add" class="btn btn-primary btn-remove">Remove</button>
+
+</div> #}
+
+
+
+<div id="filter-container" class="row mt-4">
+    <div class="col-md-12">
+        <ul class="nav justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link {{ (selected == null) ? 'selected' : '' }}" href="{{ path('/') }}">All</a>
+            </li>
+            {% for category in categories %}
+             <li class="nav-item">
+                <a class="nav-link {{ ( selected == category.id )? 'selected' : '' }}"  href="{{ path('/category' , {cat: category.id }) }}">{{ category.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div id="shoppable-container" class="row">
+    {% for book in books %}
+    <div class="col-md-3 mt-4 mb-4 d-flex justify-content-center book-item">
+        <div class="card" style="width: 18rem;">
+            <img src="{{ app.request.getBaseURL() }}{{book.image }}" class="card-img-top" alt="...">
+            <div class="card-body text-center">
+                <h5 class="card-title ">{{ book.name }}</h5>
+                <div class="card-details ">Author : <b>{{ book.author }}</b></div>
+                <div class="card-details ">ISBN : <b>{{ book.isbn }}</b></div>
+                <div class="card-details ">Price : <b>${{ book.price }}</b></div>
+                <hr>
+                <div class="card-details ">Category : <b>{{ book.category.name }}</b></div>
+                <hr>
+                <div class="form-row d-flex justify-content-center">
+                    <div class="form-group col-md-5">
+                        <input id="book-index-{{ book.id }}" required min="1" max="20" name="qty" id="qty" type="number" class="form-control"
+                            value="1">
+                    </div>
+                </div>
+                <div class="form-row d-flex justify-content-center">
+                    <div class="form-group col-md-8 mb-0">
+                        <button id="btn-add-id-{{ book.id }}" data-index="{{ book.id }}" data-id="book-index-{{ book.id }}" class="btn btn-primary btn-add">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <h2 class="text-center">No books available here :(</h2>
+    {% endfor %}
+</div>
+
+{% endblock %}

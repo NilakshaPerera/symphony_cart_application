@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add a New Books Here!{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+
+{% block body %}
+
+<div id="book-form-container" class="row d-flex justify-content-center">
+
+    <div class="col-md-8 mt-5">
+        <h5 class="text-center">Add a new book</h5>
+
+        <form id="frmAddBook" name="frmAddBook" action="" method="">
+            <input type="hidden" name="token" value="{{ csrf_token('add-book') }}" />
+            <div class="form-group col-md-12 d-flex justify-content-center">
+                <div class="image-preview logo profile-placeholder" id="image-preview-logo" data-required="false" data-img="" style="background-image: none; background-size: cover; background-position: center center;">
+                    <label for="image-upload-logo" class="image-label d-flex justify-content-center align-items-center" id="image-label-logo"><i class="fa fa-plus" aria-hidden="true"></i></label>
+                    <input type="file" name="image-upload-logo" class="image-upload" id="image-upload-logo" accept="image/*">
+                </div>
+            </div>
+
+            <div class="form-group">
+                {# <label for="exampleInputEmail1">Name</label> #}
+                <input required name="name" id="name" type="text" max="100" class="form-control" aria-describedby="emailHelp" placeholder="Name of the book">
+            </div>
+
+            <div class="form-group">
+                {# <label for="exampleInputEmail1">Author</label> #}
+                <input required name="author" id="author" type="text" class="form-control" aria-describedby="emailHelp" placeholder="Auther of the book">
+            </div>
+
+            <div class="form-group">
+                {# <label for="exampleInputEmail1">ISBN</label> #}
+                <input required name="isbn" id="isbn" type="text" class="form-control" aria-describedby="emailHelp" placeholder="ISBN of the book">
+            </div>
+
+            <div class="form-group">
+                {# <label for="exampleInputEmail1">Price (USD)</label> #}
+                <input required name="price" id="price" type="number" class="form-control" aria-describedby="emailHelp" placeholder="Price of the book">
+            </div>
+
+            <div class="form-group">
+                <label for="category">Select a Category</label>
+                <select required name="category" id="category" class="form-control">
+                    {% for category in categories %}
+                    <option value="{{ category.id }}" id="{{ category.id }}-opt">{{ category.name }}</option>
+                    {% else %}
+                    <option><em>Please add categories</em></option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-primary btn-submit">Add Book</button>
+            </div>
+
+            <div class="form-group col-md-12">
+                <div class="alert alert-danger xhr-responce d-none text-center" role="alert">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+
+    $('#frmAddBook').submit(function(e){
+        e.preventDefault();
+        var data = new FormData(this);
+        $.ajax({
+            url: base + "/book/create",
+            type: 'post',
+            data: data,
+            processData: false,
+            contentType: false,
+            beforeSend: function (xhr) {
+                $('.btn-submit').attr('disabled', true);
+            },
+            success: function (respond) {
+                if (respond.success) {
+                     swal({
+                            title: "Good job!",
+                            text: "Your book was added successfully",
+                            icon: "success",
+                            button: "Awesome!",
+                        }).then(function () {
+                            location.reload();
+                        });
+                } else {
+                    $('.xhr-responce').removeClass('alert-success');
+                    $('.xhr-responce').removeClass('d-none');
+                    $('.xhr-responce').addClass('alert-danger');
+                    var errors = '';
+                    for (var i = 0; i < respond.errors.length; i++) {
+                        errors += respond.errors[i] + '<br>';
+                    }
+                    $('.xhr-responce').html(errors);
+                }
+
+                $('.btn-submit').attr('disabled', false);
+            },
+            complete: function () {
+               
+            }
+        });
+
+    });
+    </script>
+{% endblock %}

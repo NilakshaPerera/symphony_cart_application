@@ -1,1 +1,1 @@
-# symphony_cart_application
+# Symfony Cart Application

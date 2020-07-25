@@ -1,0 +1,214 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Proceed to Checkout{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+
+{% block body %}
+
+<div id="cart-container" class="row mt-5">
+    <div class="col-md-8 items-container">
+        <table class="table ">
+            <thead>
+                <tr>
+                    <th scope="col">Book</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">QTY</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Total</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in cart["products"] %}
+                <tr>
+                    <td scope="row">
+                        <img src="{{ app.request.getBaseURL() }}{{book.banner }}">
+                    </td>
+                    <td>{{book.author }}</td>
+                    <td>{{book.qty }}</td>
+                    <td>${{book.price }}</td>
+                    <td>${{ book.qty * book.price  }}</td>
+                    <td><button id="btn-remove-{{ book.id }}" name="btn-remove" data-index="{{ book.id }}"
+                            class="btn btn-danger btn-remove"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td scope="row"></td>
+                    <td></td>
+                    <td></td>
+                    <td><b>Sub Total</b></td>
+                    <td><b>${{cart["total"]}}</b></td>
+                    <td></td>
+                </tr>
+                {% if( cart["discount"] > 0) %}
+                <tr>
+                    <td scope="row"></td>
+                    <td></td>
+                    <td></td>
+                    <td><b>Discount</b></td>
+                    <td><b>(${{cart["discount"]}})</b></td>
+                    <td></td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        <div class="alert alert-dark text-center" role="alert">
+            <b>Net Amount : ${{cart["net"]}}</b>
+        </div>
+    </div>
+
+    <div class="col-md-4 checkout-form-container">
+        <div class="form-pane ">
+            <form id="frm-checkout" name="frm-checkout">
+                <input type="hidden" name="token" value="{{ csrf_token('checkout') }}" />
+                <div class="form-group">
+                    <label class="" for="email"><b>Email</b></label>
+                    <input required type="email" class="form-control" name="email" id="email"
+                        placeholder="Enter Your email">
+                </div>
+                <div class="form-group">
+                    <label class="" for="name"><b>Name</b></label>
+                    <input required type="text" class="form-control" name="name" id="name"
+                        placeholder="Enter Your name">
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="card_number"><b>Card number</b></label>
+                            <input required value="" type="text" class="form-control" id="card_number"
+                                name="card_number" placeholder="Dummy Card">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="card_expiry"><b>Expiry date</b></label>
+                            <input required value="" type="text" class="form-control " id="card_expiry"
+                                name="card_expiry" placeholder="_ _  / _ _ ">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="card_cvc"><b>CVC</b></label>
+                            <input required value="" type="text" class="form-control" id="card_cvc" name="card_cvc"
+                                placeholder="CVC">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group text-center mt-4">
+                    <button id="btn-checkout" type="submit" class="btn btn-primary">Checkout</button>
+                </div>
+            </form>
+        </div>
+        <div class="form-pane mt-4">
+            <form id="frm-coupon" name="frm-coupon">
+                <div class="form-group">
+                    <h5 class="text-center mb-4" for="coupon"><b>Add a Coupon Code</b></h5>
+                    <input required type="text" class="form-control" name="coupon" id="coupon"
+                        placeholder="Coupon Code">
+                </div>
+                <div class="form-group text-center mt-4">
+                    <button id="btn-add-coupon" type="submit" class="btn btn-primary">Add Coupon</button>
+                </div>
+                <div class="form-group col-md-12">
+                    <div class="alert alert-success xhr-responce {{(cart["coupon"])? "": "d-none" }}  text-center"
+                        role="alert">
+                        {{ (cart["coupon"])? cart["couponText"]: "" }}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $('#frm-coupon').submit(function (e) {
+            e.preventDefault();
+            var data = new FormData(this);
+            $.ajax({
+                url: base + "/cart/addcoupon",
+                type: 'post',
+                data: data,
+                processData: false,
+                contentType: false,
+                beforeSend: function (xhr) {
+                    $('.btn-submit').attr('disabled', true);
+                },
+                success: function (respond) {
+                    if (respond.success) {
+
+                        location.reload();
+
+                    } else {
+                        $('.xhr-responce').removeClass('alert-success');
+                        $('.xhr-responce').removeClass('d-none');
+                        $('.xhr-responce').addClass('alert-danger');
+                        var errors = '';
+                        for (var i = 0; i < respond.errors.length; i++) {
+                            errors += respond.errors[i] + '<br>';
+                        }
+                        $('.xhr-responce').html(errors);
+                    }
+
+                    $('.btn-submit').attr('disabled', false);
+                },
+                complete: function () {}
+            });
+        });
+
+        $('#frm-checkout').submit(function (e) {
+            e.preventDefault();
+            var data = new FormData(this);
+            $.ajax({
+                url: base + "/cart/checkout",
+                type: 'post',
+                data: data,
+                processData: false,
+                contentType: false,
+                beforeSend: function (xhr) {
+                    $('#btn-checkout').attr('disabled', true);
+                },
+                success: function (respond) {
+                    if (respond.success) {
+                        swal({
+                            title: "Good job!",
+                            text: "You completed your purchase!",
+                            icon: "success",
+                            button: "Go Home",
+                        }).then(function () {
+                            window.location.href = "{{ path('/') }}";
+                        });
+                    } else {
+                        swal({
+                            title: "Houston, we have a problem!",
+                            text: "You need to grab some before checking out.",
+                            icon: "info",
+                            button: "Go To Store",
+                        }).then(function () {
+                            window.location.href = "{{ path('/') }}";
+                        });
+                    }
+
+                    $('#btn-checkout').attr('disabled', false);
+                },
+                complete: function () {
+
+                }
+            });
+        });
+
+    });
+</script>
+{% endblock %}
