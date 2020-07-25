@@ -13,7 +13,7 @@ class CartTest extends WebTestCase
      * Created By : Nilaksha 
      * Summary : Add an item to the cart object
      * 
-     * 
+     * @test
      */
     public function addToCart()
     {
@@ -37,7 +37,7 @@ class CartTest extends WebTestCase
      * Created By : Nilaksha 
      * Summary : Remove an item from the cart object
      * 
-     * 
+     * @test
      */
     public function removeFromCart()
     {
@@ -83,7 +83,7 @@ class CartTest extends WebTestCase
      * Created By : Nilaksha 
      * Summary : Checkouts the cart
      * 
-     * @test
+     * 
      */
     public function checkout()
     {

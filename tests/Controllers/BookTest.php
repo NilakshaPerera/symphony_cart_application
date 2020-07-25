@@ -15,7 +15,7 @@ class BookTest extends WebTestCase
      * Created By : Nilaksha 
      * Summary : Adds a book into the system
      * 
-     * 
+     * @test
      */
     public function addBook()
     {

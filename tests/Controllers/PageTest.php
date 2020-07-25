@@ -9,6 +9,7 @@ class PageTest extends WebTestCase
      * Created By : Nilaksha 
      * Summary : Checks if the pages in the application show up
      * 
+     * @test
      * @dataProvider provideUrls
      */
     public function pages($url)
