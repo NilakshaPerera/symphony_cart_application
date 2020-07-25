@@ -12,9 +12,9 @@ Actions such as add items to the cart, delete an item from the cart are purely h
 2. Clone the source into a folder in your htdocs folder in your XAMPP, MAMPP setup. 
 3. Obtain the **symphony.sql** file in the **database** folder in the solution. Create a database called **symphony** and import the **symphony.sql** file.
 4. Access the **.env** file and modify the connection string line according to your MySQL server setup.
-    - DATABASE_URL=mysql://{ USERNAME }:{ PASSWORD }@127.0.0.1:3306/symphony?serverVersion={ MySQL SERVER VERSION }
+    - DATABASE_URL=mysql://{**USERNAME**}:{**PASSWORD**}@127.0.0.1:3306/symphony?serverVersion={**MySQL SERVER VERSION**}
     - Following is the formed connection string based on my XAMPP configuration
-    - DATABASE_URL=mysql://root:@127.0.0.1:3306/symphony?serverVersion=mariadb-10.4.11
+    - DATABASE_URL=mysql://**root**:@127.0.0.1:3306/symphony?serverVersion=**mariadb-10.4.11**
 5. This solution uses GULP to compile SCSS and Javascript. Open the command line and change the directory to the root folder of the solution, execute **npm install** command. This will download the required packages and create a folder named **node_modules** in your root directory of your source code.
 6. Execute **composer update** to download Symfony related backages into the solution. This command will create a **vendor** folder and will copy all the packages in it. 
 7. For the above two instructions, you need to have Node and Composer installed in your computer.
