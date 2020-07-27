@@ -28,6 +28,10 @@ This application is built based on a powerful PHP framework, Symfony. This solut
 - Checkout data will be stored in the database along with the user data inserted on checkout.
 - This does not have user registrations, logins.
 - The checkout doesn’t require real card details.
+- Discounts are calculated according to the following criteria
+    - If you buy 5 or more Children books you get a 10% discount from the Children books total
+    - If you buy 10 or more books from each category you get 5% additional discount from the total bill
+    - If you have a coupon code you get a 15% discount for the total bill. In this case, all other discounts will be invalidated.
 - Coupon codes for this application is hardcoded in the **coupon** table in the database. Initially, below coupon codes are available in the database. Feel free to change, add values and see the outcome :)
     - COUPON2
     - 15DISCOUNT
